@@ -28,20 +28,22 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
 
     webviewView.webview.html = this._getHtml(webviewView.webview);
 
-    // Forward messages from the webview to the agent server
+    // Forward messages from the webview to the extension host
     webviewView.webview.onDidReceiveMessage(async (msg) => {
       switch (msg.command) {
-        case "sendMessage":
-          await this._postChat(msg.text);
-          break;
-        case "approve":
-          await this._postAction("/api/operations/approve");
-          break;
-        case "cancel":
-          await this._postAction("/api/operations/cancel");
-          break;
-        case "getStatus":
-          await this._fetchStatus();
+        case "openFile":
+          if (msg.filePath) {
+            try {
+              const rootPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || "";
+              const fullPath = path.isAbsolute(msg.filePath) ? msg.filePath : path.join(rootPath, msg.filePath);
+              if (fs.existsSync(fullPath)) {
+                const doc = await vscode.workspace.openTextDocument(vscode.Uri.file(fullPath));
+                await vscode.window.showTextDocument(doc);
+              }
+            } catch (err) {
+              vscode.window.showErrorMessage(`Failed to open file: ${err}`);
+            }
+          }
           break;
       }
     });
@@ -50,54 +52,6 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
   notifyServerStatus(status: "connected" | "connecting" | "disconnected"): void {
     this._view?.webview.postMessage({ type: "serverStatus", status });
   }
-
-  // -------------------------------------------------------------------------
-
-  private async _postChat(message: string): Promise<void> {
-    try {
-      const res = await fetch(`http://127.0.0.1:${this._port}/api/chat`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message }),
-      });
-      if (!res.ok) {
-        this._view?.webview.postMessage({
-          type: "error",
-          message: `Server returned ${res.status}`,
-        });
-      }
-    } catch (err) {
-      this._view?.webview.postMessage({
-        type: "error",
-        message: `Could not reach agent server: ${err}`,
-      });
-    }
-  }
-
-  private async _postAction(endpoint: string): Promise<void> {
-    try {
-      await fetch(`http://127.0.0.1:${this._port}${endpoint}`, { method: "POST" });
-    } catch (err) {
-      this._view?.webview.postMessage({
-        type: "error",
-        message: `Action failed: ${err}`,
-      });
-    }
-  }
-
-  private async _fetchStatus(): Promise<void> {
-    try {
-      const res = await fetch(`http://127.0.0.1:${this._port}/api/status`);
-      if (res.ok) {
-        const data = await res.json() as Record<string, unknown>;
-        this._view?.webview.postMessage({ type: "status", data });
-      }
-    } catch {
-      // Server not ready yet — ignore
-    }
-  }
-
-  // -------------------------------------------------------------------------
 
   private _getHtml(webview: vscode.Webview): string {
     const mediaDir = path.join(this._context.extensionPath, "media");
@@ -109,13 +63,13 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
       vscode.Uri.file(path.join(mediaDir, "sidebar.js"))
     );
 
-    // Inline HTML template with URIs injected
+    // Inline HTML template with URIs injected (equipped with version cache-buster)
     const htmlPath = path.join(mediaDir, "sidebar.html");
     let html = fs.readFileSync(htmlPath, "utf-8");
     html = html
-      .replace("{{CSS_URI}}", cssUri.toString())
-      .replace("{{JS_URI}}", jsUri.toString())
-      .replace("{{PORT}}", String(this._port));
+      .replace("{{CSS_URI}}", `${cssUri.toString()}?v=${Date.now()}`)
+      .replace("{{JS_URI}}", `${jsUri.toString()}?v=${Date.now()}`)
+      .replace(/{{PORT}}/g, String(this._port));
 
     return html;
   }

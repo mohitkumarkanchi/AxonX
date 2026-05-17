@@ -1,8 +1,8 @@
 {
   "name": "local-agent",
-  "displayName": "Local Agent",
+  "displayName": "AxonX Local Agent",
   "description": "Sidebar UI for the local AI agent workspace manager",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "publisher": "local-agent",
   "engines": {
     "vscode": "^1.85.0"
@@ -15,7 +15,7 @@
       "activitybar": [
         {
           "id": "local-agent",
-          "title": "Local Agent",
+          "title": "AxonX",
           "icon": "media/agent-icon.svg"
         }
       ]
@@ -25,7 +25,7 @@
         {
           "type": "webview",
           "id": "local-agent.sidebar",
-          "name": "Agent Chat"
+          "name": "AxonX Chat"
         }
       ]
     },
@@ -52,7 +52,7 @@
         "localAgent.pythonPath": {
           "type": "string",
           "default": "",
-          "description": "Path to Python executable (defaults to agent-workspace/.venv/bin/python)"
+          "description": "Path to Python executable (defaults to axonx/.venv/bin/python)"
         },
         "localAgent.autoStart": {
           "type": "boolean",

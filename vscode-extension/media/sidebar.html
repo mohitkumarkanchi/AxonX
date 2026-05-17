@@ -4,20 +4,41 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="Content-Security-Policy"
-    content="default-src 'none';
-             style-src {{CSS_URI}} 'unsafe-inline';
-             script-src {{JS_URI}} 'unsafe-inline';
-             connect-src http://127.0.0.1:{{PORT}};" />
+    content="default-src * 'unsafe-inline' 'unsafe-eval' data: blob:;
+             style-src * 'unsafe-inline';
+             script-src * 'unsafe-inline' 'unsafe-eval';
+             connect-src * http://127.0.0.1:* http://localhost:* ws: wss: vscode-webview://*;" />
   <link rel="stylesheet" href="{{CSS_URI}}" />
   <title>Local Agent</title>
 </head>
-<body>
+<body data-port="{{PORT}}">
   <!-- Status bar -->
   <div id="status-bar">
-    <span id="status-dot" class="dot disconnected"></span>
-    <span id="status-text">Connecting…</span>
-    <span id="branch-label"></span>
-    <span id="provider-label"></span>
+    <div class="workspace-card">
+      <div class="card-header">
+        <span class="card-title">Workspace Assistant</span>
+        <span id="status-dot" class="dot disconnected"></span>
+      </div>
+      <div class="workspace-info">
+        <span class="workspace-folder">📂 <span id="workspace-name">Offline</span></span>
+        <span id="branch-label" class="badge branch-badge hidden">main</span>
+      </div>
+      <div class="provider-info">
+        <span id="provider-label" class="badge provider-badge hidden">Ollama</span>
+        <span id="status-text" class="status-msg">Connecting…</span>
+      </div>
+      
+      <!-- Indexing progress container -->
+      <div id="index-container" class="index-card hidden">
+        <div class="index-meta">
+          <span class="index-label">📚 Indexing Workspace…</span>
+          <span id="index-ratio" class="index-value">0%</span>
+        </div>
+        <div class="progress-track">
+          <div id="index-progress-fill" class="progress-fill" style="width: 0%"></div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Message history -->
@@ -25,33 +46,45 @@
 
   <!-- Plan approval panel (hidden by default) -->
   <div id="plan-panel" class="hidden">
-    <div id="plan-header">Proposed plan</div>
-    <pre id="plan-content"></pre>
+    <div id="plan-header">📋 Proposed modifications</div>
+    <div id="plan-content"></div>
     <div id="plan-actions">
-      <button id="btn-approve" class="btn-primary">Approve</button>
+      <button id="btn-approve" class="btn-primary">Approve changes</button>
       <button id="btn-cancel" class="btn-secondary">Cancel</button>
     </div>
   </div>
 
-  <!-- Typing indicator -->
+  <!-- Thinking indicator & Interrupt button -->
   <div id="thinking" class="hidden">
-    <span class="dot-pulse"></span>
-    <span class="dot-pulse"></span>
-    <span class="dot-pulse"></span>
+    <div class="thinking-dots">
+      <span class="dot-pulse"></span>
+      <span class="dot-pulse"></span>
+      <span class="dot-pulse"></span>
+    </div>
+    <button id="btn-interrupt" title="Interrupt generation" aria-label="Interrupt">
+      <svg viewBox="0 0 24 24" width="10" height="10" fill="currentColor" style="display: block;">
+        <rect x="4" y="4" width="16" height="16" rx="2" />
+      </svg>
+      <span>Stop</span>
+    </button>
   </div>
 
   <!-- Input area -->
   <div id="input-row">
-    <textarea
-      id="input"
-      rows="3"
-      placeholder="Ask the agent anything…"
-      aria-label="Message input"
-    ></textarea>
-    <button id="btn-send" title="Send (Ctrl+Enter)">&#9658;</button>
+    <div class="input-container">
+      <textarea
+        id="input"
+        placeholder="Ask the agent anything…"
+        aria-label="Message input"
+      ></textarea>
+      <button id="btn-send" title="Send (Ctrl+Enter)" aria-label="Send">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+        </svg>
+      </button>
+    </div>
   </div>
 
-  <script>window.AGENT_PORT = "{{PORT}}";</script>
   <script src="{{JS_URI}}"></script>
 </body>
 </html>

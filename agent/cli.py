@@ -1,5 +1,5 @@
 """
-CLI entry point for agent-workspace.
+CLI entry point for axonx.
 
 Usage:
   agent init --workspace <path> [--provider claude|ollama]

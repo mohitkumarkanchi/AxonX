@@ -3,7 +3,7 @@ requires = ["setuptools>=42", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "agent-workspace"
+name = "axonx"
 version = "0.1.0"
 description = "Fully local AI agent workspace manager with dual LLM backend support"
 requires-python = ">=3.9"

@@ -1,29 +1,29 @@
-#!/usr/bin/env bash
-# Install the Local Agent VS Code extension from source.
-# Run from the vscode-extension/ directory.
-set -euo pipefail
+#!/bin/bash
+# Re-packaging and manually updating the Antigravity extension directory
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd "$SCRIPT_DIR"
+set -e
 
-echo "==> Installing npm dependencies…"
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+TARGET_DIR="$HOME/.antigravity/extensions/local-agent.local-agent-0.3.0"
+TARGET_DIR_VSCODE="$HOME/.vscode/extensions/local-agent.local-agent-0.3.0"
+
+echo "Building extension resources..."
 npm install
+npm run build
 
-echo "==> Building extension…"
-node esbuild.js
+echo "Clearing out older extension conflict folders..."
+rm -rf "$HOME/.antigravity/extensions/local-agent.local-agent-*"
+rm -rf "$HOME/.vscode/extensions/local-agent.local-agent-*"
 
-echo "==> Packaging extension…"
-if ! command -v vsce &>/dev/null; then
-  echo "    vsce not found — installing globally"
-  npm install -g @vscode/vsce
-fi
-vsce package --no-dependencies -o local-agent.vsix
+echo "Installing v0.3.0 directly to Antigravity and VS Code extensions paths..."
+mkdir -p "$TARGET_DIR"
+cp -r "$DIR/package.json" "$TARGET_DIR/"
+cp -r "$DIR/out" "$TARGET_DIR/"
+cp -r "$DIR/media" "$TARGET_DIR/"
 
-echo "==> Installing into VS Code…"
-code --install-extension local-agent.vsix
+mkdir -p "$TARGET_DIR_VSCODE"
+cp -r "$DIR/package.json" "$TARGET_DIR_VSCODE/"
+cp -r "$DIR/out" "$TARGET_DIR_VSCODE/"
+cp -r "$DIR/media" "$TARGET_DIR_VSCODE/"
 
-echo ""
-echo "Done! Open VS Code and look for 'Local Agent' in the Activity Bar (robot icon)."
-echo "Make sure the agent-workspace .venv is set up:"
-echo "  cd $(dirname "$SCRIPT_DIR")"
-echo "  .venv/bin/pip install -e ."
+echo "Successfully completed! Please completely restart your editor (VS Code or Antigravity) to reload."

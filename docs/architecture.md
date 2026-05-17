@@ -3,7 +3,6 @@
 AxonX is a high-performance, local-first AI coding companion. Instead of relying on naive semantic search or sending entire repositories to the cloud, AxonX models your codebase as a **unified, branch-aware semantic-graph network** and executes modifications inside an **AST-validated safety sandbox**.
 
 ---
-
 ## 🗺️ System Overview
 
 The following diagram illustrates how your codebase flows from raw files into the unified vector-graph index, and how the **CodeAct Agent** applies safe, validated edits to your workspace:

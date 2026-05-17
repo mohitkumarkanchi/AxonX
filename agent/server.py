@@ -88,8 +88,8 @@ class _Handler(BaseHTTPRequestHandler):
         pass  # silence access log
 
     def do_OPTIONS(self):
-        self._cors()
         self.send_response(204)
+        self._cors()
         self.end_headers()
 
     def do_GET(self):
@@ -205,8 +205,8 @@ class _Handler(BaseHTTPRequestHandler):
 
     def _handle_stream(self):
         """SSE endpoint — client keeps connection open, receives real-time events."""
-        self._cors()
         self.send_response(200)
+        self._cors()
         self.send_header("Content-Type", "text/event-stream")
         self.send_header("Cache-Control", "no-cache")
         self.send_header("Connection", "keep-alive")
@@ -220,7 +220,7 @@ class _Handler(BaseHTTPRequestHandler):
                 "branch":    state.branch,
                 "provider":  state.provider,
             })
-            self.wfile.write(frame.encode())
+            self.wfile.write(frame)
             self.wfile.flush()
 
             while True:
@@ -242,9 +242,9 @@ class _Handler(BaseHTTPRequestHandler):
     # ------------------------------------------------------------------
 
     def _json(self, data: dict, status: int = 200):
-        self._cors()
         body = json.dumps(data).encode()
         self.send_response(status)
+        self._cors()
         self.send_header("Content-Type", "application/json")
         self.send_header("Content-Length", str(len(body)))
         self.end_headers()
@@ -253,7 +253,7 @@ class _Handler(BaseHTTPRequestHandler):
     def _cors(self):
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type, Cache-Control, Connection, Accept")
 
     def _read_body(self) -> dict:
         length = int(self.headers.get("Content-Length", 0))

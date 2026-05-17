@@ -6,12 +6,12 @@ A highly optimized, local-first AI coding agent with branch-aware dual-layer ind
 
 ## 📖 Project Documentation
 
-We have compiled a complete, deep-dive documentation suite inside the [docs/](file:///Users/mohitkanchi/Desktop/localAgent/agent-workspace/docs) folder:
+We have compiled a complete, deep-dive documentation suite inside the [docs/](docs) folder:
 
-*   **[System Architecture](file:///Users/mohitkanchi/Desktop/localAgent/agent-workspace/docs/architecture.md)** — Learn about the lossless residue parser, SQLite call graphs, Reciprocal Rank Fusion (RRF), branch-aware delta indices, and AST-checked CodeAct safety sandboxes.
-*   **[CLI Command Reference](file:///Users/mohitkanchi/Desktop/localAgent/agent-workspace/docs/cli_reference.md)** — Complete dictionary of `axonx` commands (`init`, `chat`, `modify`, `serve`, `branches`, `undo`, `usage`).
-*   **[VS Code Sidebar Integration](file:///Users/mohitkanchi/Desktop/localAgent/agent-workspace/docs/vscode_integration.md)** — Guide on how the local SSE streaming server connects directly to your VS Code sidebar webview.
-*   **[Configuration Guide (.agentrc)](file:///Users/mohitkanchi/Desktop/localAgent/agent-workspace/docs/configuration.md)** — Comprehensive breakdown of configuration keys, context budgets, and dynamic model tag fallbacks.
+*   **[System Architecture](docs/architecture.md)** — Learn about the lossless residue parser, SQLite call graphs, Reciprocal Rank Fusion (RRF), branch-aware delta indices, and AST-checked CodeAct safety sandboxes.
+*   **[CLI Command Reference](docs/cli_reference.md)** — Complete dictionary of `axonx` commands (`init`, `chat`, `modify`, `serve`, `branches`, `undo`, `usage`).
+*   **[VS Code Sidebar Integration](docs/vscode_integration.md)** — Guide on how the local SSE streaming server connects directly to your VS Code sidebar webview.
+*   **[Configuration Guide (.agentrc)](docs/configuration.md)** — Comprehensive breakdown of configuration keys, context budgets, and dynamic model tag fallbacks.
 
 ---
 
@@ -41,7 +41,7 @@ We have compiled a complete, deep-dive documentation suite inside the [docs/](fi
 
 2. Create and activate the Python virtual environment:
    ```bash
-   cd agent-workspace
+   cd axonx
    python3 -m venv .venv
    source .venv/bin/activate
    .venv/bin/pip install -e .
@@ -89,18 +89,43 @@ axonx sessions --list
 axonx usage
 ```
 
-## VS Code Extension
+## VS Code & Antigravity IDE Extension
 
-The extension adds a **Local Agent** panel to the VS Code Activity Bar with a chat UI that streams responses in real time and shows plan approve/cancel buttons when the agent proposes code edits.
+The extension adds a premium, high-fidelity **Local Agent** panel to your editor's Activity Bar with a beautiful chat interface, live status indicator, and interactive approval cards.
 
-### Install
+### 🚀 Package and Install (One-Step Script)
+
+We provide a direct helper script that builds and installs the extension into both **VS Code** and **Antigravity IDE** instantly:
 
 ```bash
 cd vscode-extension
 bash install.sh
 ```
+*(Requires `node` and `npm` on your PATH).*
 
-`install.sh` runs `npm install`, bundles the TypeScript with esbuild, packages a `.vsix`, and installs it into VS Code in one step. Requires `node` and `npm` on your PATH.
+---
+
+### 📦 Manual VSIX Installation (For Release)
+
+The project includes a pre-packaged [local-agent.vsix](vscode-extension/local-agent.vsix) inside the `vscode-extension/` directory.
+
+#### Method 1: Through the Editor GUI (e.g. Antigravity IDE)
+1. Launch **Antigravity** (or VS Code).
+2. Open the **Extensions** view (`Cmd + Shift + X`).
+3. Click the **three dots (`...`)** in the top-right corner of the Extensions pane.
+4. Select **Install from VSIX...** from the dropdown.
+5. Select [vscode-extension/local-agent.vsix](vscode-extension/local-agent.vsix) to complete the installation!
+
+#### Method 2: Via the Terminal CLI
+To install the pre-built VSIX file via the CLI, run the appropriate command for your editor:
+
+```bash
+# Standard VS Code
+code --install-extension vscode-extension/local-agent.vsix
+
+# Antigravity IDE
+antigravity --install-extension vscode-extension/local-agent.vsix
+```
 
 ### What it does
 
@@ -137,7 +162,7 @@ The server (`agent/server.py`) runs on `http://127.0.0.1:7070` by default.
 ## Architecture
 
 ```
-agent-workspace/
+axonx/
 ├── agent/
 │   ├── cli.py              # CLI entry point (chat, serve, init, modify, undo…)
 │   ├── config.py           # .agentrc loader (TOML, Python 3.9 compatible)

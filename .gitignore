@@ -32,3 +32,12 @@ node_modules/
 # OS specific files
 .DS_Store
 Thumbs.db
+
+# VSIX extension artifacts
+*.vsix
+package-lock.json
+
+
+#ignore 
+docs/pitch_comparison.md
+vscode-extension/out/

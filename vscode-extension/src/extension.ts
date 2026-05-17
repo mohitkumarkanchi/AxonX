@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import * as path from "path";
 import * as http from "http";
 import * as cp from "child_process";
+import * as fs from "fs";
 import { SidebarProvider } from "./sidebarProvider";
 
 let serverProcess: cp.ChildProcess | undefined;
@@ -79,15 +80,20 @@ async function startServer(
   const workspaceRoot =
     vscode.workspace.workspaceFolders?.[0]?.uri.fsPath ?? process.cwd();
 
-  // Resolve python: config override → .venv next to this extension → fallback
+  // Resolve python: config override → .venv in active workspace → extension folder fallback
   let python: string = config.get("pythonPath", "");
   if (!python) {
-    // Extension lives inside agent-workspace/vscode-extension — go up one level
-    const agentWorkspace = path.join(context.extensionPath, "..");
-    python = path.join(agentWorkspace, ".venv", "bin", "python");
+    const workspacePython = path.join(workspaceRoot, ".venv", "bin", "python");
+    if (fs.existsSync(workspacePython)) {
+      python = workspacePython;
+    } else {
+      // Extension lives inside axonx/vscode-extension — go up one level
+      const agentWorkspace = path.join(context.extensionPath, "..");
+      python = path.join(agentWorkspace, ".venv", "bin", "python");
+    }
   }
 
-  const agentWorkspace = path.join(context.extensionPath, "..");
+  const agentWorkspace = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath ?? path.join(context.extensionPath, "..");
 
   return new Promise((resolve) => {
     serverProcess = cp.spawn(

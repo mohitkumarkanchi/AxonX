@@ -1,6 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-  <circle cx="12" cy="8" r="4"/>
-  <path d="M6 20v-2a6 6 0 0 1 12 0v2"/>
-  <line x1="12" y1="12" x2="12" y2="16"/>
-  <circle cx="12" cy="17" r="1" fill="currentColor"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Futuristic Bot Visor/Helmet -->
+  <rect x="3" y="9" width="18" height="12" rx="4" />
+  <!-- Antenna -->
+  <path d="M12 9V5" />
+  <circle cx="12" cy="4" r="1" fill="currentColor" />
+  <!-- Robot Eyes (glowing bars or nodes) -->
+  <line x1="7" y1="13" x2="10" y2="13" stroke-width="2" />
+  <line x1="14" y1="13" x2="17" y2="13" stroke-width="2" />
+  <!-- AxonX Branding - Stylized X in the center mouth area -->
+  <path d="M10 18l4-4M10 14l4 4" stroke="#f59e0b" stroke-width="2" />
+  <!-- Ear cups -->
+  <path d="M2 13v4M22 13v4" />
 </svg>
