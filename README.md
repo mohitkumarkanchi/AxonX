@@ -27,6 +27,61 @@ We have compiled a complete, deep-dive documentation suite inside the [docs/](do
 - **VS Code sidebar**: real-time chat, token-by-token streaming, approve/cancel plan panel
 - **Apple Silicon optimized**: Metal/MLX via Ollama
 
+---
+
+## 💬 Chat Capabilities, Scope & Examples
+
+AxonX provides a highly advanced, context-aware interactive chat experience natively inside both the CLI (`axonx chat`) and your VS Code Sidebar panel. 
+
+The chat utilizes our **Intent Router** to classify your prompts, automatically invoking the appropriate specialized agent behind the scenes.
+
+### 🎯 Capability Scopes
+
+1. **RAG-Powered codebase Q&A (Read-Only)**
+   * **What it does**: Searches both the CPU-optimized FAISS vector database and SQLite call-graph databases, combining results using Reciprocal Rank Fusion (RRF) to answer conceptual or structural queries.
+   * **LLM Used**: Ollama `llama3.2:latest` (or `claude-sonnet-4-5` if provider is overridden).
+   * **Includes**: Full files, exact line ranges, symbol definitions, and `.agentrc` context.
+
+2. **CodeAct Code Modification (Write & Self-Heal)**
+   * **What it does**: Compiles a multi-step proposed plan for making workspace changes, waits for user approval, compiles the diffs in an AST-validated sandbox, runs your native test suite, and stashes changes in a millisecond on fail.
+   * **LLM Used**: Ollama `qwen2.5-coder:14b` (or `claude-sonnet-4-5`).
+
+3. **Version & Git Intelligence**
+   * **What it does**: Interrogates git commit histories, traces file modifications, displays delta layers, and coordinates branch-aware swaps.
+   * **LLM Used**: Ollama `phi3:3.8b` (Specialized in fast structural commands).
+
+---
+
+### 💡 Concrete Examples & Prompts
+
+#### 🔍 Example 1: Codebase Q&A & Configuration Exploration
+Ask AxonX to explain complex structural architectures or parameters.
+* **Prompt**: 
+  > *"How does the configuration system handle fallback TOML parsers, and what file is responsible?"*
+* **Response**: 
+  AxonX will scan the vector index, trace class imports, and output that `agent/config.py` handles the configuration, utilizing `tomli` as a robust fallback for Python versions older than `3.11` (which lack native `tomllib`). It will print the exact lines from the code.
+
+#### 🕸️ Example 2: Relational Call-Graph Query
+Leverage the Relational SQLite Call-Graph index to track inheritance and dependencies.
+* **Prompt**:
+  > *"Find all provider classes that implement LLMProvider and show where their source files are located."*
+* **Response**:
+  The Q&A agent traverses the relational call-graph SQLite tables to find subclasses of `LLMProvider`. It instantly returns:
+  * `OllamaProvider` inside [agent/llm/ollama_provider.py](agent/llm/ollama_provider.py)
+  * `ClaudeProvider` inside [agent/llm/claude_provider.py](agent/llm/claude_provider.py)
+
+#### 🛠️ Example 3: Automated Sandbox Refactoring
+Trigger the self-healing CodeAct loop to safely make codebase changes.
+* **Prompt**:
+  > *"Refactor the watcher in watcher.py to debounce index updates by 1000ms instead of 500ms."*
+* **Response**:
+  1. The agent compiles an **Implementation Plan** showing the exact target files and steps.
+  2. The VS Code Sidebar displays a custom approval card.
+  3. Upon clicking **Approve**, the agent writes the change, compiles it through Python `ast.parse` to confirm no syntax errors, and runs `pytest` automatically.
+  4. If tests pass, the change is committed. If a test fails, the workspace is immediately rolled back using a git stash snapshot in 1ms!
+
+---
+
 ## Quick Start
 
 ### Prerequisites

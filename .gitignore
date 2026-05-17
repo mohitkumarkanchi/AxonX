@@ -40,4 +40,5 @@ package-lock.json
 
 #ignore 
 docs/pitch_comparison.md
+docs/linkedin_release.md
 vscode-extension/out/
