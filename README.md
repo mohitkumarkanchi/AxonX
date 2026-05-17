@@ -1,6 +1,6 @@
 # AxonX — Local AI Code Intelligence Engine
 
-A highly optimized, local-first AI coding agent with branch-aware dual-layer indexing (vector + call-graph), AST syntax guardrails, automated test integration, and a real-time VS Code sidebar.
+A highly optimized, local-first AI coding agent for **Python codebases** featuring branch-aware dual-layer indexing (vector + call-graph), AST syntax guardrails, automated test integration, and a real-time VS Code sidebar.
 
 ---
 
@@ -12,11 +12,13 @@ We have compiled a complete, deep-dive documentation suite inside the [docs/](do
 *   **[CLI Command Reference](docs/cli_reference.md)** — Complete dictionary of `axonx` commands (`init`, `chat`, `modify`, `serve`, `branches`, `undo`, `usage`).
 *   **[VS Code Sidebar Integration](docs/vscode_integration.md)** — Guide on how the local SSE streaming server connects directly to your VS Code sidebar webview.
 *   **[Configuration Guide (.agentrc)](docs/configuration.md)** — Comprehensive breakdown of configuration keys, context budgets, and dynamic model tag fallbacks.
+*   **[Roadmap & Research Directions](docs/roadmap_research.md)** — Future engineering directions for MLX native embeddings, speculative decoding, TS/Rust graph expansions, and containerized runs.
 
 ---
 
 ## Features
 
+- **Python-Exclusive Support**: Designed and mathematically optimized **exclusively for Python codebases** (AST compile validation and call-graph indexing are natively written for Python).
 - **Dual LLM backends**: Ollama (fully local) and Claude API — switchable per session or per agent role
 - **Code workspace indexing**: dual-layer index (semantic FAISS vectors + SQLite call graph)
 - **Per-branch index**: separate delta index per git branch
