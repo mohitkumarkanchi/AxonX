@@ -16,6 +16,7 @@ We have compiled a complete, deep-dive documentation suite inside the [docs/](do
 *   **[Security & Hardening Audit](docs/security_audit.md)** — Complete audit on local loopback boundaries, shell injection prevention, absolute path relative resolution, and AST human-in-the-loop sandboxing.
 *   **[AxonX vs. Aider vs. Cline](docs/comparison_aider_cline.md)** — In-depth architectural comparison focusing on local token scaling, branch index swapping, and syntax-guarded safety.
 *   **[Performance & Efficiency Benchmarks](docs/benchmarks.md)** — Core performance metrics on branch swapping latency, context token compression ratios, and background memory footprint.
+*   **[AxonX Research Paper](docs/research_paper.md)** — Complete academic-grade research paper outlining vector-graph fusion methodologies, LaTeX formulations, and full related literature citations.
 
 ---
 
