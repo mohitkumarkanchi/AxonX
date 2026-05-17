@@ -1,0 +1,77 @@
+{
+  "name": "local-agent",
+  "displayName": "Local Agent",
+  "description": "Sidebar UI for the local AI agent workspace manager",
+  "version": "0.1.0",
+  "publisher": "local-agent",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "local-agent",
+          "title": "Local Agent",
+          "icon": "media/agent-icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "local-agent": [
+        {
+          "type": "webview",
+          "id": "local-agent.sidebar",
+          "name": "Agent Chat"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "local-agent.openSidebar",
+        "title": "Open Local Agent",
+        "category": "Local Agent"
+      },
+      {
+        "command": "local-agent.restartServer",
+        "title": "Restart Agent Server",
+        "category": "Local Agent"
+      }
+    ],
+    "configuration": {
+      "title": "Local Agent",
+      "properties": {
+        "localAgent.port": {
+          "type": "number",
+          "default": 7070,
+          "description": "Port the agent HTTP server listens on"
+        },
+        "localAgent.pythonPath": {
+          "type": "string",
+          "default": "",
+          "description": "Path to Python executable (defaults to agent-workspace/.venv/bin/python)"
+        },
+        "localAgent.autoStart": {
+          "type": "boolean",
+          "default": true,
+          "description": "Auto-start the agent server when VS Code opens"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build",
+    "build": "node esbuild.js",
+    "watch": "node esbuild.js --watch",
+    "compile": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@types/node": "^18.0.0",
+    "typescript": "^5.3.0",
+    "esbuild": "^0.20.0"
+  }
+}

@@ -1,0 +1,50 @@
+[provider]
+# "ollama" = fully local, no API key needed
+# "claude" = uses ANTHROPIC_API_KEY env var
+default = "ollama"
+
+# Per-role overrides — routing and embedding are ALWAYS ollama regardless of this setting
+reasoning_provider = "ollama"
+coding_provider    = "ollama"
+summarise_provider = "ollama"
+
+[models]
+# Ollama models
+reasoning   = "qwen2.5:14b"
+coding      = "qwen2.5-coder:14b"
+routing     = "phi3:3.8b"
+embedding   = "nomic-embed-text"
+
+# Claude models (used when provider = "claude")
+claude_reasoning  = "claude-sonnet-4-5"
+claude_coding     = "claude-sonnet-4-5"
+claude_summarise  = "claude-haiku-4-5"
+
+[safety]
+protected_branches = ["main", "master", "production"]
+max_files_per_operation = 10
+require_plan_approval = true
+auto_checkpoint = true
+
+[index]
+parallel_workers = 8
+incremental_debounce_ms = 500
+max_index_size_gb = 2.0
+cache_query_results = true
+
+[session]
+ollama_context_budget  = 6000
+claude_context_budget  = 180000
+summarise_after_turns  = 8
+keep_recent_turns      = 4
+auto_resume            = true
+
+[context_store]
+store_rag_snapshots    = true
+store_token_usage      = true
+max_sessions_stored    = 50
+max_messages_per_session = 10000
+
+[tests]
+auto_run_after_modify = true
+test_commands = { python = "pytest", javascript = "npm test", go = "go test ./..." }

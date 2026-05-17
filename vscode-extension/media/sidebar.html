@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'none';
+             style-src {{CSS_URI}} 'unsafe-inline';
+             script-src {{JS_URI}} 'unsafe-inline';
+             connect-src http://127.0.0.1:{{PORT}};" />
+  <link rel="stylesheet" href="{{CSS_URI}}" />
+  <title>Local Agent</title>
+</head>
+<body>
+  <!-- Status bar -->
+  <div id="status-bar">
+    <span id="status-dot" class="dot disconnected"></span>
+    <span id="status-text">Connecting…</span>
+    <span id="branch-label"></span>
+    <span id="provider-label"></span>
+  </div>
+
+  <!-- Message history -->
+  <div id="messages" role="log" aria-live="polite"></div>
+
+  <!-- Plan approval panel (hidden by default) -->
+  <div id="plan-panel" class="hidden">
+    <div id="plan-header">Proposed plan</div>
+    <pre id="plan-content"></pre>
+    <div id="plan-actions">
+      <button id="btn-approve" class="btn-primary">Approve</button>
+      <button id="btn-cancel" class="btn-secondary">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Typing indicator -->
+  <div id="thinking" class="hidden">
+    <span class="dot-pulse"></span>
+    <span class="dot-pulse"></span>
+    <span class="dot-pulse"></span>
+  </div>
+
+  <!-- Input area -->
+  <div id="input-row">
+    <textarea
+      id="input"
+      rows="3"
+      placeholder="Ask the agent anything…"
+      aria-label="Message input"
+    ></textarea>
+    <button id="btn-send" title="Send (Ctrl+Enter)">&#9658;</button>
+  </div>
+
+  <script>window.AGENT_PORT = "{{PORT}}";</script>
+  <script src="{{JS_URI}}"></script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agent-workspace"
+version = "0.1.0"
+description = "Fully local AI agent workspace manager with dual LLM backend support"
+requires-python = ">=3.9"
+dependencies = [
+    # LLM backends
+    "anthropic>=0.34.0",
+    "tiktoken>=0.7.0",
+    # Vector store (FAISS + SQLite for metadata)
+    "faiss-cpu>=1.8.0",
+    "numpy>=1.26.0",
+    # Code parsing
+    "tree-sitter>=0.21.0,<0.22.0",
+    "tree-sitter-languages>=1.10.0",
+    # File watching
+    "watchdog>=4.0.0",
+    # HTTP
+    "requests>=2.31.0",
+    # CLI / UI
+    "click>=8.1.0",
+    "rich>=13.7.0",
+    # Config
+    "tomli>=2.0.0; python_version < '3.11'",
+    # Utilities
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "pytest-mock>=3.12.0",
+    "responses>=0.25.0",
+]
+
+[project.scripts]
+axonx = "agent.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["agent*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+asyncio_mode = "auto"
