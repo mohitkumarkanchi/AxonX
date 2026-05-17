@@ -1,0 +1,27 @@
+# 🐳 AxonX Reproducible Benchmark & Scale Profiler Dockerfile
+FROM python:3.11-slim
+
+# Install system compilation dependencies required for building C/C++ tree-sitter grammars
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory inside container
+WORKDIR /axonx-benchmark
+
+# Copy project files
+COPY pyproject.toml .
+COPY agent/ ./agent/
+COPY README.md .
+
+# Install dependencies and local package in editable/development mode
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -e . && \
+    pip install --no-cache-dir pytest responses pytest-mock
+
+# Copy orchestrator scripts
+COPY scripts/ ./scripts/
+
+# Default execution: run the scalable benchmark profiler
+CMD ["python", "scripts/benchmark_runner.py"]

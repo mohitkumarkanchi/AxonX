@@ -318,6 +318,22 @@ Key settings:
 - **Python 3.9 compatible** — `tomli` used as fallback TOML parser when `tomllib` (3.11+) is unavailable
 - **SSE over WebSockets** — simpler, works natively in VS Code WebviewView without a socket server
 
+## 🐳 Reproducible Benchmarks via Docker
+
+To run the scale-profiling and database benchmarks in an isolated, secure, and reproducible environment independent of your local machine configuration:
+
+1. **Build the Benchmark Image**:
+   ```bash
+   docker build -f Dockerfile.benchmark -t axonx-benchmark .
+   ```
+
+2. **Run the Containerized Profile Suite**:
+   ```bash
+   docker run --rm axonx-benchmark
+   ```
+
+This dynamically generates a mock workspace of **~100,000 LOC (200+ modules)**, builds a relational SQLite call graph, profiles subclass query latencies (typically `< 0.5 ms`), and measures sandbox verification overheads under severe system CPU bounds.
+
 ## License
 
 MIT
