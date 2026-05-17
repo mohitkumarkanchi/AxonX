@@ -14,6 +14,7 @@ We have compiled a complete, deep-dive documentation suite inside the [docs/](do
 *   **[Configuration Guide (.agentrc)](docs/configuration.md)** — Comprehensive breakdown of configuration keys, context budgets, and dynamic model tag fallbacks.
 *   **[Roadmap & Research Directions](docs/roadmap_research.md)** — Future engineering directions for MLX native embeddings, speculative decoding, TS/Rust graph expansions, and containerized runs.
 *   **[Security & Hardening Audit](docs/security_audit.md)** — Complete audit on local loopback boundaries, shell injection prevention, absolute path relative resolution, and AST human-in-the-loop sandboxing.
+*   **[AxonX vs. Aider vs. Cline](docs/comparison_aider_cline.md)** — In-depth architectural comparison focusing on local token scaling, branch index swapping, and syntax-guarded safety.
 
 ---
 
