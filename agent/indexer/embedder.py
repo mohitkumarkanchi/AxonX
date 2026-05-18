@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
+import os
 import requests
 
-OLLAMA_BASE = "http://localhost:11434"
+OLLAMA_BASE = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434")
 DEFAULT_EMBED_MODEL = "nomic-embed-text"
 EMBED_DIM = 768  # nomic-embed-text output dimension
 

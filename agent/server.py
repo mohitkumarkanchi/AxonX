@@ -28,6 +28,7 @@ from urllib.parse import urlparse, parse_qs
 
 
 DEFAULT_PORT = int(os.environ.get("AGENT_SERVER_PORT", "7070"))
+DEFAULT_HOST = os.environ.get("AGENT_SERVER_HOST", "127.0.0.1")
 
 
 # ------------------------------------------------------------------
@@ -277,7 +278,7 @@ def _sse_frame(event: str, data: dict) -> bytes:
 
 def start_server(port: int = DEFAULT_PORT) -> ThreadingHTTPServer:
     """Start the HTTP server in a daemon thread. Returns the server instance."""
-    server = ThreadingHTTPServer(("127.0.0.1", port), _Handler)
+    server = ThreadingHTTPServer((DEFAULT_HOST, port), _Handler)
     t = threading.Thread(target=server.serve_forever, daemon=True, name="agent-server")
     t.start()
     return server
@@ -287,7 +288,7 @@ def is_port_available(port: int = DEFAULT_PORT) -> bool:
     """Return True if port is not already in use."""
     import socket
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        return s.connect_ex(("127.0.0.1", port)) != 0
+        return s.connect_ex((DEFAULT_HOST, port)) != 0
 
 
 def get_port() -> int:

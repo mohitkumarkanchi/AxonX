@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 from typing import Iterator
 
 import requests
@@ -11,7 +12,7 @@ from .provider import LLMProvider, LLMResponse, Message
 
 
 class OllamaProvider(LLMProvider):
-    BASE_URL = "http://localhost:11434"
+    BASE_URL = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434")
 
     def __init__(self, model: str = "qwen2.5:14b") -> None:
         self.model = self._resolve_model(model)

@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  axonx:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: axonx-service
+    ports:
+      - "7070:7070"  # Expose the server for the VS Code extension webview to connect
+    environment:
+      # Routes LLM & embedding requests to the host machine's GPU-accelerated Ollama
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+      # Pass the Anthropic API key from the host shell if Claude is configured
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      # Listen on all container interfaces so port forwarding works
+      - AGENT_SERVER_HOST=0.0.0.0
+    extra_hosts:
+      # Resolves host.docker.internal across all OS platforms (macOS, Windows, and Linux)
+      - "host.docker.internal:host-gateway"
+    volumes:
+      # Mount the workspace so that AxonX can inspect, index, run tests, and make edits
+      - .:/app
+    working_dir: /app
+    # Run the server to serve the workspace
+    command: python -m agent.cli serve --workspace /app --port 7070
