@@ -360,12 +360,25 @@ def _run_tests(workspace: Path, config) -> str:
     """Detect and run test suite, return output snippet."""
     commands = config.tests.test_commands
 
-    # Detect language from common markers
-    if (workspace / "pytest.ini").exists() or (workspace / "pyproject.toml").exists():
+    # Priority: explicit test config files first, then generic markers.
+    # pyproject.toml alone is not sufficient — it's present in many non-Python projects.
+    is_python = (
+        (workspace / "pytest.ini").exists()
+        or (workspace / "setup.cfg").exists()
+        or (workspace / "tox.ini").exists()
+        or (
+            (workspace / "pyproject.toml").exists()
+            and not (workspace / "package.json").exists()
+        )
+    )
+    is_js = (workspace / "package.json").exists()
+    is_go = (workspace / "go.mod").exists()
+
+    if is_python:
         cmd = commands.get("python", "pytest").split()
-    elif (workspace / "package.json").exists():
+    elif is_js:
         cmd = commands.get("javascript", "npm test").split()
-    elif (workspace / "go.mod").exists():
+    elif is_go:
         cmd = commands.get("go", "go test ./...").split()
     else:
         return ""

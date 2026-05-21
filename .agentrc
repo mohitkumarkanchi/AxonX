@@ -16,9 +16,10 @@ routing     = "phi3:3.8b"
 embedding   = "nomic-embed-text"
 
 # Claude models (used when provider = "claude")
-claude_reasoning  = "claude-sonnet-4-5"
-claude_coding     = "claude-sonnet-4-5"
-claude_summarise  = "claude-haiku-4-5"
+# Available: claude-opus-4-7 (most capable), claude-sonnet-4-6 (balanced), claude-haiku-4-5-20251001 (fast)
+claude_reasoning  = "claude-sonnet-4-6"
+claude_coding     = "claude-sonnet-4-6"
+claude_summarise  = "claude-haiku-4-5-20251001"
 
 [safety]
 protected_branches = ["main", "master", "production"]

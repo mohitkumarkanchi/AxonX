@@ -55,13 +55,27 @@ class RouterResult:
 
 
 class Router:
-    """phi3-based intent classifier — always Ollama."""
+    """Intent classifier — uses Ollama/phi3 when available, heuristic otherwise."""
 
     def __init__(self, model: str = ROUTING_MODEL) -> None:
         self._llm = OllamaProvider(model=model)
+        self._ollama_available: bool | None = None  # lazy-checked once per session
+
+    def _check_ollama(self) -> bool:
+        if self._ollama_available is None:
+            self._ollama_available = self._llm.is_available()
+            if not self._ollama_available:
+                print(
+                    "[router] Ollama is not running — using heuristic intent detection. "
+                    "Start Ollama for more accurate routing."
+                )
+        return self._ollama_available
 
     def classify(self, message: str) -> RouterResult:
         """Classify a user message and return a RouterResult."""
+        if not self._check_ollama():
+            return self._heuristic_fallback(message)
+
         prompt = EXAMPLES + f"\nUser: \"{message}\"\n->"
 
         try:
@@ -73,8 +87,9 @@ class Router:
             raw = response.content.strip()
             return self._parse(raw, message)
         except Exception as exc:
-            print(f"[router] Error: {exc}. Defaulting to qa.")
-            return RouterResult(intent="qa", raw_response=str(exc))
+            print(f"[router] LLM error: {exc}. Falling back to heuristic.")
+            self._ollama_available = False  # don't retry a broken connection
+            return self._heuristic_fallback(message)
 
     def _parse(self, raw: str, original_message: str) -> RouterResult:
         """Parse the LLM JSON response into a RouterResult."""

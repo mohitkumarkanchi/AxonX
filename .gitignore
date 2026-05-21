@@ -38,7 +38,15 @@ Thumbs.db
 package-lock.json
 
 
-#ignore 
+# Secrets / environment
+.env
+.env.local
+.env.*
+*.pem
+*.key
+anthropic_key*
+
+#ignore
 docs/pitch_comparison.md
 docs/linkedin_release.md
 vscode-extension/out/

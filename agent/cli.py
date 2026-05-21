@@ -668,7 +668,7 @@ def _run_chat_loop(
                 })
 
         else:  # qa
-            result = rag.run(user_input, session=session, scope=route.scope)
+            result = rag.run(user_input, session=session, scope=route.scope, session_store=store)
             reply = result.content
             if not headless:
                 ui.print_assistant(reply, agent_type="rag")

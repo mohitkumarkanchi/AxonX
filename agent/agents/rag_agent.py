@@ -51,7 +51,7 @@ class RagAgent(BaseAgent):
         self._provider = build_provider("reasoning", config, override=provider_override)
         self._provider_name = provider_override or config.provider.default
 
-    def run(self, query: str, session=None, scope: str = "local") -> AgentResult:
+    def run(self, query: str, session=None, scope: str = "local", session_store=None) -> AgentResult:
         # 1. Embed query
         try:
             query_vec = embed_text(query, model=self._config.models.embedding)
@@ -145,16 +145,16 @@ class RagAgent(BaseAgent):
 
         # 7. Build messages and trim to budget
         budget = (
-            WORKING_BUDGET.get("claude-sonnet-4-5", 180_000)
+            WORKING_BUDGET.get(self._provider.model, 180_000)
             if self._provider_name == "claude"
             else self._config.session.ollama_context_budget
         )
 
-        # Load conversation history from session
+        # Load conversation history via session_store (session is a Session dataclass, not SessionStore)
         history: list[Message] = []
-        if session is not None:
+        if session_store is not None and session is not None:
             try:
-                history = session.load_conversation_messages()
+                history = session_store.load_conversation_messages(session.id)
             except Exception:
                 pass
 

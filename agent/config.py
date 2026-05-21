@@ -21,9 +21,9 @@ class ModelsConfig:
     coding: str = "qwen2.5-coder:14b"
     routing: str = "phi3:3.8b"
     embedding: str = "nomic-embed-text"
-    claude_reasoning: str = "claude-sonnet-4-5"
-    claude_coding: str = "claude-sonnet-4-5"
-    claude_summarise: str = "claude-haiku-4-5"
+    claude_reasoning: str = "claude-sonnet-4-6"
+    claude_coding: str = "claude-sonnet-4-6"
+    claude_summarise: str = "claude-haiku-4-5-20251001"
 
 
 @dataclass
@@ -132,9 +132,10 @@ routing     = "phi3:3.8b"
 embedding   = "nomic-embed-text"
 
 # Claude models (used when provider = "claude")
-claude_reasoning  = "claude-sonnet-4-5"
-claude_coding     = "claude-sonnet-4-5"
-claude_summarise  = "claude-haiku-4-5"
+# Available: claude-opus-4-7 (most capable), claude-sonnet-4-6 (balanced), claude-haiku-4-5-20251001 (fast)
+claude_reasoning  = "claude-sonnet-4-6"
+claude_coding     = "claude-sonnet-4-6"
+claude_summarise  = "claude-haiku-4-5-20251001"
 
 [safety]
 protected_branches = ["main", "master", "production"]
@@ -209,20 +210,25 @@ test_commands = { python = "pytest", javascript = "npm test", go = "go test ./..
 
 
 CONTEXT_LIMITS: dict[str, int] = {
-    "claude-sonnet-4-5": 200_000,
-    "claude-haiku-4-5":  200_000,
-    "claude-sonnet-4-6": 200_000,
+    "claude-opus-4-7":          200_000,
+    "claude-sonnet-4-6":        200_000,
     "claude-haiku-4-5-20251001": 200_000,
-    "qwen2.5:14b":        32_000,
-    "qwen2.5-coder:14b":  32_000,
-    "phi3:3.8b":           4_000,
+    # legacy names kept for backwards-compat with old .agentrc files
+    "claude-sonnet-4-5":        200_000,
+    "claude-haiku-4-5":         200_000,
+    "qwen2.5:14b":               32_000,
+    "qwen2.5-coder:14b":         32_000,
+    "phi3:3.8b":                  4_000,
 }
 
 WORKING_BUDGET: dict[str, int] = {
-    "claude-sonnet-4-5": 180_000,
-    "claude-haiku-4-5":  180_000,
-    "claude-sonnet-4-6": 180_000,
-    "qwen2.5:14b":         6_000,
-    "qwen2.5-coder:14b":   6_000,
-    "phi3:3.8b":           2_000,
+    "claude-opus-4-7":          180_000,
+    "claude-sonnet-4-6":        180_000,
+    "claude-haiku-4-5-20251001": 180_000,
+    # legacy
+    "claude-sonnet-4-5":        180_000,
+    "claude-haiku-4-5":         180_000,
+    "qwen2.5:14b":                6_000,
+    "qwen2.5-coder:14b":          6_000,
+    "phi3:3.8b":                  2_000,
 }
