@@ -8,8 +8,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from agent.llm.provider import Message, LLMResponse
-from agent.agents.base import AgentResult
+from axonx.llm.provider import Message, LLMResponse
+from axonx.agents.base import AgentResult
 
 
 def _make_llm_response(content: str) -> LLMResponse:
@@ -46,7 +46,7 @@ def _make_mock_graph():
 
 
 def _make_config(tmp_path):
-    from agent.config import Config
+    from axonx.config import Config
     config = Config()
     config.workspace_path = tmp_path
     config.agent_dir = tmp_path / ".agent"
@@ -57,7 +57,7 @@ def _make_config(tmp_path):
 
 class TestRagAgent:
     def test_run_returns_result(self, tmp_path):
-        from agent.agents.rag_agent import RagAgent
+        from axonx.agents.rag_agent import RagAgent
 
         config = _make_config(tmp_path)
         faiss = _make_mock_faiss()
@@ -69,7 +69,7 @@ class TestRagAgent:
         agent = RagAgent(config, faiss, graph)
         agent._provider = mock_provider
 
-        with patch("agent.agents.rag_agent.embed_text", return_value=[0.1] * 768):
+        with patch("axonx.agents.rag_agent.embed_text", return_value=[0.1] * 768):
             result = agent.run("What does authenticate do?")
 
         assert isinstance(result, AgentResult)
@@ -77,7 +77,7 @@ class TestRagAgent:
         assert "authenticate" in result.content or len(result.content) > 0
 
     def test_run_handles_embed_failure(self, tmp_path):
-        from agent.agents.rag_agent import RagAgent
+        from axonx.agents.rag_agent import RagAgent
 
         config = _make_config(tmp_path)
         faiss = _make_mock_faiss()
@@ -85,13 +85,13 @@ class TestRagAgent:
 
         agent = RagAgent(config, faiss, graph)
 
-        with patch("agent.agents.rag_agent.embed_text", side_effect=Exception("Ollama down")):
+        with patch("axonx.agents.rag_agent.embed_text", side_effect=Exception("Ollama down")):
             result = agent.run("test query")
 
         assert "Error" in result.content
 
     def test_rrf_merge(self):
-        from agent.agents.rag_agent import _rrf_merge
+        from axonx.agents.rag_agent import _rrf_merge
 
         semantic = [
             {"chunk_id": "s1", "content": "a"},
@@ -107,7 +107,7 @@ class TestRagAgent:
 
 class TestVersionAgent:
     def test_run_git_log(self, tmp_path):
-        from agent.agents.version_agent import VersionAgent
+        from axonx.agents.version_agent import VersionAgent
 
         config = _make_config(tmp_path)
         mock_provider = MagicMock()
@@ -128,7 +128,7 @@ class TestVersionAgent:
         assert result.agent_type == "version"
 
     def test_blocks_non_readonly_commands(self, tmp_path):
-        from agent.agents.version_agent import VersionAgent
+        from axonx.agents.version_agent import VersionAgent
 
         config = _make_config(tmp_path)
         agent = VersionAgent(config)
@@ -138,7 +138,7 @@ class TestVersionAgent:
         assert "Blocked" in result.error
 
     def test_extract_file_from_query(self, tmp_path):
-        from agent.agents.version_agent import VersionAgent
+        from axonx.agents.version_agent import VersionAgent
 
         config = _make_config(tmp_path)
         agent = VersionAgent(config)
@@ -149,7 +149,7 @@ class TestVersionAgent:
 
 class TestCodeActAgent:
     def test_dry_run_returns_plan(self, tmp_path):
-        from agent.agents.codeact_agent import CodeActAgent
+        from axonx.agents.codeact_agent import CodeActAgent
 
         config = _make_config(tmp_path)
         faiss = _make_mock_faiss()
@@ -162,14 +162,14 @@ class TestCodeActAgent:
         agent = CodeActAgent(config, faiss, graph)
         agent._provider = mock_provider
 
-        with patch("agent.agents.codeact_agent.embed_text", return_value=[0.1] * 768):
+        with patch("axonx.agents.codeact_agent.embed_text", return_value=[0.1] * 768):
             result = agent.run("Add logging to app", dry_run=True)
 
         assert "DRY RUN" in result.content
         assert "plan" in result.content.lower() or "Add logging" in result.content
 
     def test_parse_plan(self, tmp_path):
-        from agent.agents.codeact_agent import CodeActAgent
+        from axonx.agents.codeact_agent import CodeActAgent
 
         config = _make_config(tmp_path)
         faiss = _make_mock_faiss()
@@ -186,7 +186,7 @@ class TestCodeActAgent:
         assert plan.steps[0].new == "y"
 
     def test_parse_plan_with_markdown_fence(self, tmp_path):
-        from agent.agents.codeact_agent import CodeActAgent
+        from axonx.agents.codeact_agent import CodeActAgent
 
         config = _make_config(tmp_path)
         faiss = _make_mock_faiss()
@@ -201,7 +201,7 @@ class TestCodeActAgent:
 
 class TestOrchestrator:
     def test_compound_qa_then_modify(self, tmp_path):
-        from agent.agents.orchestrator import Orchestrator
+        from axonx.agents.orchestrator import Orchestrator
 
         config = _make_config(tmp_path)
         faiss = _make_mock_faiss()
@@ -212,7 +212,7 @@ class TestOrchestrator:
         orchestrator._rag._provider = MagicMock()
         orchestrator._rag._provider.chat.return_value = mock_response
 
-        with patch("agent.agents.rag_agent.embed_text", return_value=[0.1] * 768):
+        with patch("axonx.agents.rag_agent.embed_text", return_value=[0.1] * 768):
             result = orchestrator.run(
                 "explain auth then add logging",
                 sub_tasks=["qa"],

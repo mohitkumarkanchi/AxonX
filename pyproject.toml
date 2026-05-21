@@ -39,11 +39,11 @@ dev = [
 ]
 
 [project.scripts]
-axonx = "agent.cli:main"
+axonx = "axonx.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["agent*"]
+include = ["axonx*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

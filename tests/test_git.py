@@ -9,9 +9,9 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from agent.git.conflict_resolver import ConflictBlock, _parse_conflict_blocks, format_conflicts_for_chat
-from agent.safety.guardrails import GuardrailError, check_operation
-from agent.safety.scope_pin import ScopePin
+from axonx.git.conflict_resolver import ConflictBlock, _parse_conflict_blocks, format_conflicts_for_chat
+from axonx.safety.guardrails import GuardrailError, check_operation
+from axonx.safety.scope_pin import ScopePin
 
 
 # ------------------------------------------------------------------
@@ -66,11 +66,11 @@ class TestConflictResolver:
 
 class TestGuardrails:
     def test_protected_branch_raises(self, tmp_path):
-        from agent.config import Config
+        from axonx.config import Config
         config = Config()
         config.safety.protected_branches = ["main", "master"]
 
-        with patch("agent.safety.guardrails.current_branch", return_value="main"):
+        with patch("axonx.safety.guardrails.current_branch", return_value="main"):
             with pytest.raises(GuardrailError, match="protected branch"):
                 check_operation(
                     files=["auth.py"],
@@ -79,12 +79,12 @@ class TestGuardrails:
                 )
 
     def test_max_files_raises(self, tmp_path):
-        from agent.config import Config
+        from axonx.config import Config
         config = Config()
         config.safety.max_files_per_operation = 3
         config.safety.protected_branches = []
 
-        with patch("agent.safety.guardrails.current_branch", return_value="feature/test"):
+        with patch("axonx.safety.guardrails.current_branch", return_value="feature/test"):
             with pytest.raises(GuardrailError, match="files"):
                 check_operation(
                     files=["a.py", "b.py", "c.py", "d.py"],
@@ -93,12 +93,12 @@ class TestGuardrails:
                 )
 
     def test_force_bypasses_file_limit(self, tmp_path):
-        from agent.config import Config
+        from axonx.config import Config
         config = Config()
         config.safety.max_files_per_operation = 3
         config.safety.protected_branches = []
 
-        with patch("agent.safety.guardrails.current_branch", return_value="feature/test"):
+        with patch("axonx.safety.guardrails.current_branch", return_value="feature/test"):
             # Should not raise with force=True
             check_operation(
                 files=["a.py", "b.py", "c.py", "d.py"],
@@ -108,12 +108,12 @@ class TestGuardrails:
             )
 
     def test_non_protected_branch_allowed(self, tmp_path):
-        from agent.config import Config
+        from axonx.config import Config
         config = Config()
         config.safety.protected_branches = ["main", "master"]
         config.safety.max_files_per_operation = 10
 
-        with patch("agent.safety.guardrails.current_branch", return_value="feature/auth-refactor"):
+        with patch("axonx.safety.guardrails.current_branch", return_value="feature/auth-refactor"):
             # Should not raise
             check_operation(
                 files=["auth.py"],

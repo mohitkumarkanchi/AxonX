@@ -6,8 +6,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from agent.llm.provider import LLMResponse
-from agent.router import Router, RouterResult
+from axonx.llm.provider import LLMResponse
+from axonx.router import Router, RouterResult
 
 
 def _mock_router(response_json: str) -> Router:

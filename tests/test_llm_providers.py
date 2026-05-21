@@ -6,8 +6,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from agent.llm.provider import Message, LLMResponse
-from agent.llm.token_counter import count_tokens_tiktoken, trim_to_budget
+from axonx.llm.provider import Message, LLMResponse
+from axonx.llm.token_counter import count_tokens_tiktoken, trim_to_budget
 
 
 # ------------------------------------------------------------------
@@ -54,7 +54,7 @@ class TestTokenCounter:
 
 class TestOllamaProvider:
     def test_chat_success(self):
-        from agent.llm.ollama_provider import OllamaProvider
+        from axonx.llm.ollama_provider import OllamaProvider
 
         mock_response = MagicMock()
         mock_response.status_code = 200
@@ -75,7 +75,7 @@ class TestOllamaProvider:
         assert result.output_tokens == 5
 
     def test_embed(self):
-        from agent.llm.ollama_provider import OllamaProvider
+        from axonx.llm.ollama_provider import OllamaProvider
 
         mock_response = MagicMock()
         mock_response.status_code = 200
@@ -90,7 +90,7 @@ class TestOllamaProvider:
 
     def test_stream_yields_tokens(self):
         import json
-        from agent.llm.ollama_provider import OllamaProvider
+        from axonx.llm.ollama_provider import OllamaProvider
 
         tokens = [
             json.dumps({"message": {"content": "tok1"}}).encode(),
@@ -111,7 +111,7 @@ class TestOllamaProvider:
         assert results == ["tok1", " tok2"]
 
     def test_fallback_resolver(self):
-        from agent.llm.ollama_provider import OllamaProvider
+        from axonx.llm.ollama_provider import OllamaProvider
 
         # Mock /api/tags returning nomic-embed-text and phi3:3.8b
         mock_response = MagicMock()
@@ -144,7 +144,7 @@ class TestOllamaProvider:
 class TestClaudeProvider:
     def test_chat_success(self):
         import os
-        from agent.llm.claude_provider import ClaudeProvider
+        from axonx.llm.claude_provider import ClaudeProvider
 
         mock_client = MagicMock()
         mock_msg = MagicMock()
@@ -165,7 +165,7 @@ class TestClaudeProvider:
 
     def test_is_available_no_key(self, monkeypatch):
         import os
-        from agent.llm.claude_provider import ClaudeProvider
+        from axonx.llm.claude_provider import ClaudeProvider
         monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
         assert not ClaudeProvider.is_available()
 
@@ -176,9 +176,9 @@ class TestClaudeProvider:
 
 class TestFactory:
     def test_routing_always_ollama(self):
-        from agent.config import Config
-        from agent.llm.factory import build_provider
-        from agent.llm.ollama_provider import OllamaProvider
+        from axonx.config import Config
+        from axonx.llm.factory import build_provider
+        from axonx.llm.ollama_provider import OllamaProvider
 
         config = Config()
         config.provider.default = "claude"  # even if claude is default
@@ -186,9 +186,9 @@ class TestFactory:
         assert isinstance(provider, OllamaProvider)
 
     def test_embedding_always_ollama(self):
-        from agent.config import Config
-        from agent.llm.factory import build_provider
-        from agent.llm.ollama_provider import OllamaProvider
+        from axonx.config import Config
+        from axonx.llm.factory import build_provider
+        from axonx.llm.ollama_provider import OllamaProvider
 
         config = Config()
         config.provider.default = "claude"
@@ -196,9 +196,9 @@ class TestFactory:
         assert isinstance(provider, OllamaProvider)
 
     def test_reasoning_ollama(self):
-        from agent.config import Config
-        from agent.llm.factory import build_provider
-        from agent.llm.ollama_provider import OllamaProvider
+        from axonx.config import Config
+        from axonx.llm.factory import build_provider
+        from axonx.llm.ollama_provider import OllamaProvider
 
         config = Config()
         config.provider.default = "ollama"
@@ -207,9 +207,9 @@ class TestFactory:
 
     def test_claude_fallback_without_key(self, monkeypatch):
         import os
-        from agent.config import Config
-        from agent.llm.factory import build_provider
-        from agent.llm.ollama_provider import OllamaProvider
+        from axonx.config import Config
+        from axonx.llm.factory import build_provider
+        from axonx.llm.ollama_provider import OllamaProvider
 
         monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
         config = Config()

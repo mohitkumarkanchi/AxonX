@@ -8,8 +8,8 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from agent.session import SessionStore
-from agent.llm.provider import Message, LLMResponse
+from axonx.session import SessionStore
+from axonx.llm.provider import Message, LLMResponse
 
 
 @pytest.fixture

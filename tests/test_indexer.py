@@ -7,11 +7,11 @@ from pathlib import Path
 
 import pytest
 
-from agent.indexer.exclusions import ExclusionSet, discover_files, load_exclusions
-from agent.indexer.parser import parse_file, Chunk
-from agent.index.faiss_store import FAISSStore
-from agent.index.graph_store import GraphStore
-from agent.indexer.graph import extract_edges
+from axonx.indexer.exclusions import ExclusionSet, discover_files, load_exclusions
+from axonx.indexer.parser import parse_file, Chunk
+from axonx.index.faiss_store import FAISSStore
+from axonx.index.graph_store import GraphStore
+from axonx.indexer.graph import extract_edges
 
 
 # ------------------------------------------------------------------
